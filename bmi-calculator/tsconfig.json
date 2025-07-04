@@ -1,5 +1,25 @@
 {
     "compilerOptions": {
-      "noImplicitAny": true
+      "target": "ES2020",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "./dist",
+      "rootDir": "./",
+      "esModuleInterop": true,
+      "strict": true,
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "strictNullChecks": true,
+      "strictPropertyInitialization": true,
+      "strictBindCallApply": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitThis": true,
+      "alwaysStrict": true,
+      "declaration": true,
+      "resolveJsonModule": true,
+      "allowJs": true
     }
   }
+  
+  

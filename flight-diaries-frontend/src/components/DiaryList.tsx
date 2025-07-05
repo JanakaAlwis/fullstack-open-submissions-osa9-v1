@@ -1,23 +1,17 @@
-import React from "react";
-import { DiaryEntry } from "../types";
+import { DiaryEntry } from '../types';
 
-interface Props {
-  diaries: DiaryEntry[];
-}
+const DiaryList = ({ entries }: { entries: DiaryEntry[] }) => (
+  <div>
+    <h2>Diary Entries</h2>
+    {entries.map((entry) => (
+      <div key={entry.id} style={{ marginBottom: '1rem' }}>
+        <strong>{entry.date}</strong>
+        <div>Visibility: {entry.visibility}</div>
+        <div>Weather: {entry.weather}</div>
+      </div>
+    ))}
+  </div>
+);
 
-const DiaryList: React.FC<Props> = ({ diaries }) => {
-  return (
-    <div>
-      {diaries.map((diary) => (
-        <div key={diary.id} style={{ border: "1px solid gray", margin: 5, padding: 10 }}>
-          <p><strong>Date:</strong> {diary.date}</p>
-          <p><strong>Visibility:</strong> {diary.visibility}</p>
-          <p><strong>Weather:</strong> {diary.weather}</p>
-          {diary.comment && <p><strong>Comment:</strong> {diary.comment}</p>}
-        </div>
-      ))}
-    </div>
-  );
-};
 
 export default DiaryList;

@@ -1,14 +1,19 @@
 export interface DiaryEntry {
   id: number;
   date: string;
-  visibility: "great" | "good" | "ok" | "poor";
-  weather: "sunny" | "rainy" | "cloudy" | "stormy" | "windy";
-  comment?: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment: string;
 }
 
-export interface DiaryEntryFormValues {
+export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
+
+export type Weather = 'sunny' | 'rainy' | 'cloudy' | 'stormy' | 'windy';
+export type Visibility = 'great' | 'good' | 'ok' | 'poor';
+
+export type DiaryEntryFormValues = {
   date: string;
-  visibility: "great" | "good" | "ok" | "poor";
-  weather: "sunny" | "rainy" | "cloudy" | "stormy" | "windy";
-  comment?: string;
-}
+  weather: Weather;
+  visibility: Visibility;
+  comment: string;
+};

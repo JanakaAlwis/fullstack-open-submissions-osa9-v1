@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from "react";
 import diaryService from "./services/diaryService";
-import { DiaryEntry } from "./types";
+import { DiaryEntry, DiaryEntryFormValues } from "./types";
+import DiaryList from "./components/DiaryList";
+import DiaryForm from "./components/DiaryForm";
+import axios from "axios";
 
 const App: React.FC = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    diaryService.getAll().then((data) => setDiaries(data));
+    diaryService.getAll().then(setDiaries);
   }, []);
 
+  const addDiary = async (newEntry: DiaryEntryFormValues) => {
+    try {
+      const createdDiary = await diaryService.create(newEntry);
+      setDiaries(diaries.concat(createdDiary));
+      setErrorMessage(null);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMessage(error.response.data.error || "Failed to add diary");
+      } else {
+        setErrorMessage("Failed to add diary");
+      }
+    }
+  };
+
+  const clearError = () => setErrorMessage(null);
+
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <h1>Flight Diaries</h1>
-      {diaries.map((diary) => (
-        <div key={diary.id} style={{ border: "1px solid gray", margin: 5, padding: 10 }}>
-          <p><strong>Date:</strong> {diary.date}</p>
-          <p><strong>Visibility:</strong> {diary.visibility}</p>
-          <p><strong>Weather:</strong> {diary.weather}</p>
-          {diary.comment && <p><strong>Comment:</strong> {diary.comment}</p>}
-        </div>
-      ))}
+      <DiaryForm onSubmit={addDiary} errorMessage={errorMessage} clearError={clearError} />
+      <DiaryList diaries={diaries} />
     </div>
   );
 };

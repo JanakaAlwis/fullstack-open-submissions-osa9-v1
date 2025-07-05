@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import diaryService from "./services/diaryService";
+import { DiaryEntry } from "./types";
 
-function App() {
+const App: React.FC = () => {
+  const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+
+  useEffect(() => {
+    diaryService.getAll().then((data) => setDiaries(data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Flight Diaries</h1>
+      {diaries.map((diary) => (
+        <div key={diary.id} style={{ border: "1px solid gray", margin: 5, padding: 10 }}>
+          <p><strong>Date:</strong> {diary.date}</p>
+          <p><strong>Visibility:</strong> {diary.visibility}</p>
+          <p><strong>Weather:</strong> {diary.weather}</p>
+          {diary.comment && <p><strong>Comment:</strong> {diary.comment}</p>}
+        </div>
+      ))}
     </div>
   );
-}
+};
 
 export default App;

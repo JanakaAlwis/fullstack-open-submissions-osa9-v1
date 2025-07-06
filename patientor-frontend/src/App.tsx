@@ -3,32 +3,24 @@ import axios from "axios";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PatientListPage from "./components/PatientListPage";
 import PatientPage from "./components/PatientPage";
-import { Patient, Diagnosis } from "./types";
+import { Patient, NonSensitivePatient } from "./types";
 import { apiBaseUrl } from "./constants";
 
 const App = () => {
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [diagnoses, setDiagnoses] = useState<Record<string, Diagnosis>>({});
+  const [patients, setPatients] = useState<NonSensitivePatient[]>([]);
 
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatients = async () => {
       const { data: patientList } = await axios.get<Patient[]>(`${apiBaseUrl}/patients`);
-      setPatients(patientList);
-    };
-
-    const fetchDiagnoses = async () => {
-      const { data: diagnosisList } = await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
-      const diagnosesDict = diagnosisList.reduce<Record<string, Diagnosis>>((acc, diagnosis) => {
-        acc[diagnosis.code] = diagnosis;
-        return acc;
-      }, {});
-      setDiagnoses(diagnosesDict);
+      const nonSensitivePatients = patientList.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+        id, name, dateOfBirth, gender, occupation
+      }));
+      setPatients(nonSensitivePatients);
     };
 
     void fetchPatients();
-    void fetchDiagnoses();
   }, []);
 
   return (
@@ -40,7 +32,7 @@ const App = () => {
         />
         <Route
           path="/patients/:id"
-          element={<PatientPage diagnoses={diagnoses} />}
+          element={<PatientPage />}
         />
       </Routes>
     </Router>

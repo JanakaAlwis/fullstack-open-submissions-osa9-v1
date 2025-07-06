@@ -1,5 +1,10 @@
 import React from "react";
-import { Entry, HealthCheckEntry, OccupationalHealthcareEntry, HospitalEntry } from "../../types";
+import {
+  Entry,
+  HealthCheckEntry,
+  OccupationalHealthcareEntry,
+  HospitalEntry
+} from "../types";
 import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import WorkIcon from '@mui/icons-material/Work';

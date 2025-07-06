@@ -1,13 +1,12 @@
-// src/components/PatientPage/index.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Typography, Box } from "@mui/material";
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female';
-import TransgenderIcon from '@mui/icons-material/Transgender';
+import MaleIcon from "@mui/icons-material/Male";
+import FemaleIcon from "@mui/icons-material/Female";
+import TransgenderIcon from "@mui/icons-material/Transgender";
 
-import { Patient, Entry, Diagnosis } from "../../types";
+import { Patient, Entry, Diagnosis, Gender } from "../../types";
 import { apiBaseUrl } from "../../constants";
 
 import EntryDetails from "../EntryDetails";
@@ -25,7 +24,7 @@ const PatientPage = () => {
       try {
         const { data } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
         setPatient(data);
-      } catch (e) {
+      } catch {
         setError("Patient not found");
       }
     };
@@ -38,7 +37,7 @@ const PatientPage = () => {
           return acc;
         }, {});
         setDiagnoses(diagnosesDict);
-      } catch (e) {
+      } catch {
         setError("Failed to load diagnoses");
       }
     };
@@ -55,11 +54,11 @@ const PatientPage = () => {
     return <Typography>Loading patient data...</Typography>;
   }
 
-  const genderIcon = () => {
-    switch (patient.gender) {
-      case "male":
+  const genderIcon = (gender: Gender) => {
+    switch (gender) {
+      case Gender.Male:
         return <MaleIcon />;
-      case "female":
+      case Gender.Female:
         return <FemaleIcon />;
       default:
         return <TransgenderIcon />;
@@ -69,11 +68,12 @@ const PatientPage = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        {patient.name} {genderIcon()}
+        {patient.name} {genderIcon(patient.gender)}
       </Typography>
       <Typography><b>Date of Birth:</b> {patient.dateOfBirth}</Typography>
       <Typography><b>SSN:</b> {patient.ssn}</Typography>
       <Typography><b>Occupation:</b> {patient.occupation}</Typography>
+
       <Box mt={3}>
         <Typography variant="h6">Entries</Typography>
         {patient.entries.length === 0 ? (
@@ -89,3 +89,4 @@ const PatientPage = () => {
 };
 
 export default PatientPage;
+

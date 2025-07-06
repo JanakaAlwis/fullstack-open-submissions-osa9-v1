@@ -1,6 +1,6 @@
 import express from 'express';
 
-import diaryService from '../services/diaryService';
+import diaryService from '../services/diaryService'; // services
 
 import toNewDiaryEntry from '../utils';
 

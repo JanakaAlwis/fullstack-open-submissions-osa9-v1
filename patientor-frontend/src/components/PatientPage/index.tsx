@@ -1,3 +1,4 @@
+// src/components/PatientPage/index.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -6,12 +7,15 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
-import { Patient } from "../../types";
+import { Patient, Entry, Diagnosis } from "../../types";
 import { apiBaseUrl } from "../../constants";
+
+import EntryDetails from "../EntryDetails";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Record<string, Diagnosis>>({});
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,7 +30,21 @@ const PatientPage = () => {
       }
     };
 
+    const fetchDiagnoses = async () => {
+      try {
+        const { data } = await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
+        const diagnosesDict = data.reduce<Record<string, Diagnosis>>((acc, diagnosis) => {
+          acc[diagnosis.code] = diagnosis;
+          return acc;
+        }, {});
+        setDiagnoses(diagnosesDict);
+      } catch (e) {
+        setError("Failed to load diagnoses");
+      }
+    };
+
     void fetchPatient();
+    void fetchDiagnoses();
   }, [id]);
 
   if (error) {
@@ -61,11 +79,8 @@ const PatientPage = () => {
         {patient.entries.length === 0 ? (
           <Typography>No entries found.</Typography>
         ) : (
-          patient.entries.map((entry, index) => (
-            <Box key={index} my={1} p={1} border={1} borderRadius={2}>
-              {/* Render entry details here when you expand the Entry type */}
-              <Typography>Entry details will go here.</Typography>
-            </Box>
+          patient.entries.map((entry: Entry) => (
+            <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
           ))
         )}
       </Box>
